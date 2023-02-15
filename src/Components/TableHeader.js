@@ -1,41 +1,18 @@
 import React, { useState } from "react";
-
+import { VscFoldUp, VscFoldDown, VscFold } from "react-icons/vsc";
 function TableHeader({ items, setItems }) {
   const [headers, setHeaders] = useState([
     {
       Field: "id",
-      SortingOrder: "ASC",
-      isSortable: true,
-    },
-    {
-      Field: "title",
-      SortingOrder: "ASC",
-      isSortable: false,
+      SortingOrder: "NAN",
     },
     {
       Field: "price",
-      SortingOrder: "ASC",
-      isSortable: true,
-    },
-    {
-      Field: "description",
-      SortingOrder: "ASC",
-      isSortable: false,
-    },
-    {
-      Field: "category",
-      SortingOrder: "ASC",
-      isSortable: false,
+      SortingOrder: "NAN",
     },
     {
       Field: "rating",
-      SortingOrder: "ASC",
-      isSortable: true,
-    },
-    {
-      Field: "image",
-      SortingOrder: "ASC",
-      isSortable: false,
+      SortingOrder: "NAN",
     },
   ]);
 
@@ -78,16 +55,30 @@ function TableHeader({ items, setItems }) {
   const sortField = (field) => {
     let header = headers.find((header) => header.Field === field);
     let headerIndex = headers.findIndex((header) => header.Field === field);
-    if (header.isSortable) {
-      if (header.SortingOrder === "ASC") {
-        sorting("ASC", field);
-        updateHeader(headerIndex, { SortingOrder: "DSC" });
-      } else {
-        console.log("Hello");
-        sorting("DSC", field);
-        updateHeader(headerIndex, { SortingOrder: "ASC" });
-      }
+    let newHeaders = [...headers].map((header) => {
+      if (header.Field === field) return header;
+      return {
+        ...header,
+        SortingOrder: "NAN",
+      };
+    });
+
+    setHeaders(newHeaders);
+    if (header.SortingOrder === "NAN" || header.SortingOrder === "DSC") {
+      sorting("ASC", field);
+      updateHeader(headerIndex, { SortingOrder: "ASC" });
+    } else {
+      sorting("DSC", field);
+      updateHeader(headerIndex, { SortingOrder: "DSC" });
     }
+  };
+
+  const checkAscOrDscIcon = (field) => {
+    let header = headers.find((header) => header.Field === field);
+    
+    if (header.SortingOrder === "NAN") return <VscFold />;
+    if (header.SortingOrder === "ASC") return <VscFoldUp />;
+    if (header.SortingOrder === "DSC") return <VscFoldDown />;
   };
 
   return (
@@ -97,16 +88,27 @@ function TableHeader({ items, setItems }) {
           onClick={() => {
             sortField("id");
           }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
         >
           Id
+          {checkAscOrDscIcon("id")}
         </th>
         <th>Title</th>
         <th
           onClick={() => {
             sortField("price");
           }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
         >
-          Price
+          Price {checkAscOrDscIcon("price")}
         </th>
         <th>Description</th>
         <th>Category</th>
@@ -114,8 +116,13 @@ function TableHeader({ items, setItems }) {
           onClick={() => {
             sortField("rating");
           }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
         >
-          Rating
+          Rating {checkAscOrDscIcon("rating")}
         </th>
         <th>Image</th>
       </tr>
