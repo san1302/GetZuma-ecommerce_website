@@ -1,24 +1,20 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import TableHeader from "./Components/TableHeader";
-import SearchForm from "./Components/SearchForm";
+import TableHeader from "./components/tableHeader";
+import SearchForm from "./components/searchForm";
 export default function App() {
   const [items, setItems] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetch("https://fakestoreapi.com/products");
-      try {
-        const resData = await result.json();
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((resData) => {
         setItems(resData);
         setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchData();
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (

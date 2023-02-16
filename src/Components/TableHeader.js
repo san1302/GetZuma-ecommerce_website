@@ -45,37 +45,39 @@ function TableHeader({ items, setItems }) {
 
   const updateHeader = (headerIndex, headerAttributes) => {
     console.log(headerIndex);
-    setHeaders([
-      ...headers.slice(0, headerIndex),
-      Object.assign({}, headers[headerIndex], headerAttributes),
-      ...headers.slice(headerIndex + 1),
-    ]);
-  };
 
-  const sortField = (field) => {
-    let header = headers.find((header) => header.Field === field);
-    let headerIndex = headers.findIndex((header) => header.Field === field);
-    let newHeaders = [...headers].map((header) => {
-      if (header.Field === field) return header;
+    const newHeaders = [...headers].map((header, idx) => {
+      if (idx === headerIndex) {
+        return {
+          ...header,
+          SortingOrder: headerAttributes,
+        };
+      }
       return {
         ...header,
         SortingOrder: "NAN",
       };
     });
-
+    console.log(newHeaders);
     setHeaders(newHeaders);
+  };
+
+  const sortField = (field) => {
+    let header = headers.find((header) => header.Field === field);
+    let headerIndex = headers.findIndex((header) => header.Field === field);
+
     if (header.SortingOrder === "NAN" || header.SortingOrder === "DSC") {
       sorting("ASC", field);
-      updateHeader(headerIndex, { SortingOrder: "ASC" });
+      updateHeader(headerIndex, "ASC");
     } else {
       sorting("DSC", field);
-      updateHeader(headerIndex, { SortingOrder: "DSC" });
+      updateHeader(headerIndex, "DSC");
     }
   };
 
   const checkAscOrDscIcon = (field) => {
     let header = headers.find((header) => header.Field === field);
-    
+
     if (header.SortingOrder === "NAN") return <VscFold />;
     if (header.SortingOrder === "ASC") return <VscFoldUp />;
     if (header.SortingOrder === "DSC") return <VscFoldDown />;
@@ -92,6 +94,7 @@ function TableHeader({ items, setItems }) {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            cursor: "pointer",
           }}
         >
           Id
@@ -106,6 +109,7 @@ function TableHeader({ items, setItems }) {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            cursor: "pointer",
           }}
         >
           Price {checkAscOrDscIcon("price")}
@@ -120,6 +124,7 @@ function TableHeader({ items, setItems }) {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            cursor: "pointer",
           }}
         >
           Rating {checkAscOrDscIcon("rating")}
